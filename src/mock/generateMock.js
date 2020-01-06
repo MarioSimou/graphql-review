@@ -1,6 +1,7 @@
 import faker from "faker";
 import { promisify } from "util";
 import fs from "fs";
+import path from 'path'
 
 const fns = (fs => {
   const generateUser = () => ({
@@ -9,20 +10,22 @@ const fns = (fs => {
     lName: faker.name.lastName(),
     job: faker.name.jobTitle(),
     country: faker.address.country(),
-    phone: faker.phone.phoneNumber()
+    phone: faker.phone.phoneNumber(),
+    products: [],
   });
 
   const generateProduct = () => ({
     id: faker.random.uuid(),
     name: faker.commerce.productName(),
     price: faker.commerce.price(),
-    material: faker.commerce.productMaterial()
+    material: faker.commerce.productMaterial(),
+    users: [],
   });
 
   const writeJson = (fileName, data) =>
     promisify(fs.writeFile).call(
       fs,
-      `${fileName}.json`,
+      path.resolve(__dirname,`${fileName}.json`),
       JSON.stringify({ [fileName]: data },null,4),
       {
         encoding: "utf8",
@@ -55,8 +58,8 @@ init(async () => {
         for(let i=0; i < numOfMatches; i++){
             const index = genUsersProductNumber()
             const product = products[index]
-            product.users = product.users ? [...product.users, user.id] : [user.id]
-            user.products = user.products ? [...user.products, product.id] : [product.id]
+            product.users = [...product.users, user.id]
+            user.products = [...user.products, product.id]
         }
     }
 

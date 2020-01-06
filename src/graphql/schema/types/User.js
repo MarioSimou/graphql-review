@@ -1,30 +1,37 @@
-import {GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString} from 'graphql'
-import {Node,Timestamp} from './Interface'
+import {GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLList} from 'graphql'
+import Product from './Product'
 
 export default new GraphQLObjectType({
     name: 'User',
-    interfaces: [ Node, Timestamp ],
     description: 'A user entity in the system',
     fields: {
-        'id': {
-            type: GraphQLID,
+        id: {
+            type: GraphQLNonNull(GraphQLID),
             description: 'A unique identifier of a user'
         },
-        'username': {
+        fName: {
             type: GraphQLNonNull(GraphQLString),
-            description: 'A name assigned to each user. A username is unique for each user'
+            description: 'The first name of a user',
         },
-        'email': {
+        lName: {
             type: GraphQLNonNull(GraphQLString),
-            description: 'An email address assigned to each user. An email is unique for each user'
+            description: 'The last name of a user',
         },
-        'createdAt': {
-            type: GraphQLNonNull(GraphQLString),
-            description: 'The time of creation of a user express in ISOString'
+        job: {
+            type: GraphQLString,
+            description: 'The job title of a user'
         },
-        'updatedAt': {
+        country: {
             type: GraphQLNonNull(GraphQLString),
-            description: 'The time of update of a user express in ISOString'
+            description: 'The country of origin of a user'
+        },
+        phone: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The phone number of a user'
+        },
+        products: {
+            type: GraphQLNonNull(GraphQLList(Product)),
+            description: 'A list of ids that match those users that bought the product'
         }
     },
 })

@@ -1,5 +1,6 @@
-import {findItem} from '../../utils'
-import u from '../../utils'
-
-export const getUsers = (_,__,{mock}) => new u.classes.Response({status:200,success:true, users: mock.data}).resolve()
-export const getUser = (_,{query},{mock}) => new u.classes.Response({status:200, success:true, user: findItem(query, ...mock.data)}).resolve()
+export const getUsers = (_,__,{db}) => {
+    return db.users.map(user => ({...user, products: user.products.map(productId => db.products.find(product => product.id === productId))}))
+}
+export const getProducts = (_,__,{db}) => {
+    return db.products
+}
