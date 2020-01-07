@@ -1,5 +1,14 @@
-export const getUsers = (_,__,{db}) => {
-    return db.users.map(user => ({...user, products: user.products.map(productId => db.products.find(product => product.id === productId))}))
+import {
+    findManyItems,
+    findItem
+} from '../../utils'
+
+export const getUsers = (_,{query},{db}) => {
+    if(!query) return db.users
+    return findManyItems(query,...db.users)
+}
+export const getUser = (_,{query},{db}) => {
+    return findItem(query,...db.users)
 }
 export const getProducts = (_,__,{db}) => {
     return db.products

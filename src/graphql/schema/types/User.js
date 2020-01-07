@@ -1,8 +1,10 @@
 import {GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLList} from 'graphql'
 import Product from './Product'
+import {Node} from './Interface'
 
 export default new GraphQLObjectType({
     name: 'User',
+    interfaces: [Node],
     description: 'A user entity in the system',
     fields: {
         id: {
@@ -19,7 +21,8 @@ export default new GraphQLObjectType({
         },
         job: {
             type: GraphQLString,
-            description: 'The job title of a user'
+            description: 'The job title of a user',
+            defaultValue: 'N/A'
         },
         country: {
             type: GraphQLNonNull(GraphQLString),
@@ -31,7 +34,10 @@ export default new GraphQLObjectType({
         },
         products: {
             type: GraphQLNonNull(GraphQLList(Product)),
-            description: 'A list of ids that match those users that bought the product'
+            description: 'A list of ids that match those users that bought the product',
+            resolve: (parent,_,{db}) => {
+                return parent.products.map(productId => db.products.find(product => product.id === productId))
+            }
         }
     },
 })

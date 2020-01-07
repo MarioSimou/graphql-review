@@ -1,38 +1,34 @@
 export const findItem = (query, ...items) => {
-    outer:
+    const matches = []
     for(let item of items){
         for(let [key,value] of Object.entries(query)){
-            if(item[key] != value) continue outer
+            if(item[key] == value) matches.push(item)
         }
-        return item
     }
+    if(matches.length === 0) return null
+    return matches.length > 1 ? matches : matches[0]
 }
 
-export default {
-    classes: {
-        Response: (function(){
-            function setPropertyGetter(key){
-                return Object.defineProperty(this,key, {get: function(){ return this['_'+key]}})
-            }
-            function Response({status,success,message,user,users}){
-                this._status = status
-                this._success = success
-                this._message = message
-                this._user = user
-                this._users = users
-                this._all = {status,success,message,user,users}
-            
-                setPropertyGetter.call(this,'status')
-                setPropertyGetter.call(this,'success')
-                setPropertyGetter.call(this,'message')
-                setPropertyGetter.call(this,'user')
-                setPropertyGetter.call(this,'users')
-            }
-            Response.prototype.resolve = function(){
-                return {...this._all}
-            }
-        
-            return Response
-        })()
+export const findManyItems = (fn => (...args) => {
+    const items = fn(...args)
+    return items instanceof Array ? items : [items]
+})(findItem)
+
+export const newItem = (item, data) => ({...item, ...data})
+
+export const updateUserPointer = (user, data) => {
+    for(let [key,value] of Object.entries(data)){
+        if(user[key]) user[key] = value
     }
+    return user
 }
+
+export const convertTo = (convRates => (price, to) => {
+    const convPrice = convRates[to] * price
+    if(!convPrice) return null
+    return parseFloat(convPrice).toFixed(2)        
+})({
+    eur: 1.18,
+    usd: 1.31,
+    gbr: 1,
+})
