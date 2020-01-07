@@ -1,10 +1,9 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLFloat, GraphQLList, GraphQLID } from 'graphql'
-import {Node} from './Interface'
-import {Currency} from './Enum'
-import User from './User'
-import {convertTo} from '../../utils'
+import Node from '../interfaces/Node'
+import Currency from '../enums/Currency'
+import {convertTo} from '../../../utils'
 
-export default new GraphQLObjectType({
+const Product = new GraphQLObjectType({
     name: 'Product',
     interfaces: [Node],
     fields: {
@@ -27,5 +26,10 @@ export default new GraphQLObjectType({
         material: {
             type: GraphQLString
         },
+        users: {
+            type:  GraphQLNonNull(GraphQLList(GraphQLString)),
+        }
     }  
 })
+
+export default () => Product

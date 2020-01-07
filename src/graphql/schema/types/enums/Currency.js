@@ -1,6 +1,6 @@
 import { GraphQLEnumType } from 'graphql'
 
-export const Currency = new GraphQLEnumType({
+export default new GraphQLEnumType({
     name: 'Currency',
     values: {
         EUR: {

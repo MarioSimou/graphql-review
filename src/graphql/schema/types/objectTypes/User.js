@@ -1,8 +1,8 @@
 import {GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLList} from 'graphql'
 import Product from './Product'
-import {Node} from './Interface'
+import Node from '../interfaces/Node'
 
-export default new GraphQLObjectType({
+const User = new GraphQLObjectType({
     name: 'User',
     interfaces: [Node],
     description: 'A user entity in the system',
@@ -33,7 +33,7 @@ export default new GraphQLObjectType({
             description: 'The phone number of a user'
         },
         products: {
-            type: GraphQLNonNull(GraphQLList(Product)),
+            type: GraphQLNonNull(GraphQLList(Product())),
             description: 'A list of ids that match those users that bought the product',
             resolve: (parent,_,{db}) => {
                 return parent.products.map(productId => db.products.find(product => product.id === productId))
@@ -41,3 +41,5 @@ export default new GraphQLObjectType({
         }
     },
 })
+
+export default () => User

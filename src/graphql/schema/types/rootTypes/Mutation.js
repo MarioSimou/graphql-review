@@ -1,7 +1,9 @@
 import { GraphQLObjectType, GraphQLNonNull } from 'graphql'
-import User from './User'
-import * as resolvers from '../resolvers/Mutation'
-import * as inputs from './Inputs'
+import User from '../objectTypes/User'
+import * as resolvers from '../../resolvers/Mutation'
+import dataCreateUserInput from '../inputObjectTypes/dataCreateUserInput'
+import dateUpdateUserInput from '../inputObjectTypes/dateUpdateUserInput'
+import queryUserOneInput from '../inputObjectTypes/queryUserOneInput'
 
 export default new GraphQLObjectType({
     name: 'Mutation',
@@ -10,31 +12,31 @@ export default new GraphQLObjectType({
         createUser: {
             args: {
                 data: {
-                    type: GraphQLNonNull(inputs.dataCreateUserInput),
+                    type: GraphQLNonNull(dataCreateUserInput),
                 }
             },
-            type: User,
+            type: User(),
             resolve: resolvers.createUser,
         },
         updateUser: {
             args: {
                 query: {
-                    type: GraphQLNonNull(inputs.queryUserOneInput),
+                    type: GraphQLNonNull(queryUserOneInput),
                 },
                 data: {
-                    type: GraphQLNonNull(inputs.dateUpdateUserInput),
+                    type: GraphQLNonNull(dateUpdateUserInput),
                 },
             },
-            type: User,
+            type: User(),
             resolve: resolvers.updateUser,
         },
         deleteUser: {
             args: {
                 query: {
-                    type: GraphQLNonNull(inputs.queryUserOneInput),
+                    type: GraphQLNonNull(queryUserOneInput),
                 },
             },
-            type: User,
+            type: User(),
             resolve: resolvers.deleteUser,
         }
     }

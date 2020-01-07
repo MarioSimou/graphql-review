@@ -1,6 +1,6 @@
 import  { GraphQLInterfaceType, GraphQLID } from 'graphql'
 
-export const Node = new GraphQLInterfaceType({
+export default new GraphQLInterfaceType({
     name: 'Node',
     fields: {
         id: {
