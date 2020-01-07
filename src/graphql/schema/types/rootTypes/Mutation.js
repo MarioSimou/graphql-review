@@ -15,7 +15,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(dataCreateUserInput),
                 }
             },
-            type: User(),
+            type: User,
             resolve: resolvers.createUser,
         },
         updateUser: {
@@ -27,7 +27,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(dateUpdateUserInput),
                 },
             },
-            type: User(),
+            type: User,
             resolve: resolvers.updateUser,
         },
         deleteUser: {
@@ -36,7 +36,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(queryUserOneInput),
                 },
             },
-            type: User(),
+            type: User,
             resolve: resolvers.deleteUser,
         }
     }

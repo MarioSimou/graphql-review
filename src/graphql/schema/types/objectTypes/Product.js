@@ -2,11 +2,12 @@ import { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLFloat, GraphQL
 import Node from '../interfaces/Node'
 import Currency from '../enums/Currency'
 import {convertTo} from '../../../utils'
+import User from './User'
 
-const Product = new GraphQLObjectType({
+export default new GraphQLObjectType({
     name: 'Product',
     interfaces: [Node],
-    fields: {
+    fields: () => ({
         id: {
             type: GraphQLNonNull(GraphQLID)
         },
@@ -27,9 +28,10 @@ const Product = new GraphQLObjectType({
             type: GraphQLString
         },
         users: {
-            type:  GraphQLNonNull(GraphQLList(GraphQLString)),
+            type:  GraphQLNonNull(GraphQLList(User)),
+            resolve: ({users},_,{db}) => {
+                return users.map(userId => db.users.find(user => user.id === userId))
+            }
         }
-    }  
+    })  
 })
-
-export default () => Product

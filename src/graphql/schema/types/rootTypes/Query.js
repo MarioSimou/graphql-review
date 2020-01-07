@@ -11,7 +11,7 @@ export default new GraphQLObjectType({
     description: 'The RootQueryType of the type system',
     fields: {
         getUsers: {
-            type: GraphQLNonNull(GraphQLList(User())),
+            type: GraphQLNonNull(GraphQLList(User)),
             args: {
                 'query': {type: queryUserManyInput }
             },
@@ -19,7 +19,7 @@ export default new GraphQLObjectType({
             resolve: resolvers.getUsers,
         },
         getUser: {
-            type: User(),
+            type: User,
             args: {
                 query: { type: queryUserOneInput }
             } ,
@@ -27,7 +27,7 @@ export default new GraphQLObjectType({
             resolve: resolvers.getUser,
         },
         getProducts: {
-            type: GraphQLNonNull(GraphQLList(Product())),
+            type: GraphQLNonNull(GraphQLList(Product)),
             description: 'Returns the whole collection of products',
             resolve: resolvers.getProducts,
         }
