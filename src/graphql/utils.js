@@ -18,9 +18,15 @@ export const newItem = (item, data) => ({...item, ...data})
 
 export const updateUserPointer = (user, data) => {
     for(let [key,value] of Object.entries(data)){
-        if(user[key]) user[key] = value
+        if(user[key] !== undefined) user[key] = value
     }
     return user
+}
+export const updateProductPointer = (product,data) => {
+    for(let [key,value] of Object.entries(data)){
+        if(product[key] !== undefined) product[key] = value
+    }
+    return product
 }
 
 export const convertTo = (convRates => (price, to) => {
