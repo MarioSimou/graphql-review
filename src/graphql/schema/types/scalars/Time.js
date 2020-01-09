@@ -21,7 +21,6 @@ export default new GraphQLScalarType({
     },
     // runs when the arguments are passed as a variables
     parseValue: t => {
-        console.log('variables')
         if((typeof new Date(t).valueOf()) !== 'number'){
             throw new GraphQLError('Query Error: Invalid date', t)
         }

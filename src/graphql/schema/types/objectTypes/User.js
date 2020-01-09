@@ -4,13 +4,14 @@ import Node from '../interfaces/Node'
 import Email from '../scalars/Email'
 import Time from '../scalars/Time'
 
-export function User({id,fName,lName,email,dateOfBirth,job,country,phone,products}){
+export function User({id,fName,lName,email,dob,job,country,phone,products}){
+    console.log('ID: ', id)
     this.id = id
     this.fName = fName
     this.lName = lName
     this.email = email
     this.job = job
-    this.dateOfBirth = dateOfBirth
+    this.dob = dob
     this.country = country
     this.phone = phone
     this.products = products
@@ -37,7 +38,7 @@ export default new GraphQLObjectType({
             type: GraphQLNonNull(Email),
             description: 'The email address of a user',
         },
-        dateOfBirth: {
+        dob: {
             type: GraphQLNonNull(Time),
             description: 'The time of creation of a user expressed in milliseconds since 1970'
         },

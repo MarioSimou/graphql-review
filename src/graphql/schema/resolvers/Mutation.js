@@ -3,13 +3,16 @@ import {Product} from '../types/objectTypes/Product'
 import {User} from '../types/objectTypes/User'
 import faker from 'faker'
 
-const newUser = data => new User({id: faker.random.uuid() , fName: null, lName: null, phone:null, country: null, products: [], ...data})
-const newProduct = data => new Product({id: faker.random.uuid(), name: null, price: null, material: null, users: [], ... data})
+const newUser = user => new User({fName: user.fname, lName: user.lname,products:[], ...user})
+const newProduct = product => new Product({users: [], ...product})
 
-export const createUser = (_,{data},{db}) => {
-    const user = newUser(data)
-    db.users.push(user)
-    return {success: true, status: 200, body: user}
+export const createUser = async (_,{data},{sql}) => {
+    try {
+        const [user] = await sql`INSERT INTO users ${sql(data)} RETURNING *`
+        return {success: true, status: 200, body: newUser(user)}
+    } catch(e){
+        return {success: false, status: 400, message: e.message}
+    }
 
 }
 export const updateUser = (_,{query,data},{db}) => {
@@ -25,10 +28,13 @@ export const deleteUser = (_,{query},{db}) => {
     return {success: true, status: 200, body: user }
 }
 
-export const createProduct = (_,{data},{db}) => {
-    const product = newProduct(data)
-    db.products.push(product)
-    return {success: true, status: 200, body: product }
+export const createProduct = async (_,{data},{sql}) => {
+    try {
+        const [product] = await sql`INSERT INTO products ${sql(data)} RETURNING *`
+        return {success: true, status: 200, body: newProduct(product) }    
+    } catch(e){
+        return {success: false, status: 400, body: e.message }
+    }
 }
 
 export const updateProduct = (_,{query,data},{db}) => {

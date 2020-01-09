@@ -8,7 +8,7 @@ export default new GraphQLInputObjectType({
         fName: { type: GraphQLNonNull(GraphQLString)},
         lName: {type: GraphQLNonNull(GraphQLString)},
         email: { type: GraphQLNonNull(Email)},
-        dateOfBirth: { type: GraphQLNonNull(Time)},
+        dob: { type: GraphQLNonNull(Time)},
         job: { type: GraphQLString},
         country: {  type: GraphQLNonNull(GraphQLString)},
         phone: { type: GraphQLNonNull(GraphQLString)},

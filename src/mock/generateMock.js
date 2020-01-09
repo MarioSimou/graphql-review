@@ -24,20 +24,24 @@ const fns = (fs => {
     users: [],
   });
 
-  const writeJson = (fileName, data) =>
+  const writeTypeFile = (ext, toType) => (fileName, data) =>
     promisify(fs.writeFile).call(
       fs,
-      path.resolve(__dirname,`${fileName}.json`),
-      JSON.stringify(data,null,4),
+      path.resolve(__dirname,`${fileName}.${ext}`),
+      toType(data),
       {
         encoding: "utf8",
         flag: "w+"
       }
-    );
+    )
+
+  const writeJson = writeTypeFile('json', data => JSON.stringify(data,null,4))
+  const writeCSV = writeTypeFile('csv', data => data.map(item => Object.values(item).join(',')).join("\n"))
+
   const generateNumber = (min, max) => () =>
     Math.round(Math.random() * (max - min - 1)) + min;
 
-  return { generateUser, generateProduct, writeJson, generateNumber };
+  return { generateUser, generateProduct, write: { json: writeJson, csv: writeCSV }, generateNumber };
 })(fs);
 
 const init = cb => cb();
@@ -65,7 +69,11 @@ init(async () => {
         }
     }
 
-    await fns.writeJson("data", {products, users})
+    await Promise.all([
+      fns.write.csv("products", products), // array
+      fns.write.csv("users", users), // array
+    ])
+    // await fns.write.json("data", {products, users})
   } catch (e) {
     console.log("Error: ", e);
   }
