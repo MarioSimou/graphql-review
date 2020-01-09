@@ -8,6 +8,8 @@ const fns = (fs => {
     id: faker.random.uuid(),
     fName: faker.name.firstName(),
     lName: faker.name.lastName(),
+    email: faker.internet.email(),
+    dateOfBirth: faker.date.past(),
     job: faker.name.jobTitle(),
     country: faker.address.country(),
     phone: faker.phone.phoneNumber(),
@@ -26,7 +28,7 @@ const fns = (fs => {
     promisify(fs.writeFile).call(
       fs,
       path.resolve(__dirname,`${fileName}.json`),
-      JSON.stringify({ [fileName]: data },null,4),
+      JSON.stringify(data,null,4),
       {
         encoding: "utf8",
         flag: "w+"
@@ -63,10 +65,7 @@ init(async () => {
         }
     }
 
-    await Promise.all([
-      fns.writeJson("products", products),
-      fns.writeJson("users", users)
-    ]);
+    await fns.writeJson("data", {products, users})
   } catch (e) {
     console.log("Error: ", e);
   }

@@ -6,6 +6,7 @@ export default new GraphQLInputObjectType({
         id: {type: GraphQLID },
         fName: {type: GraphQLString},
         lName: {type: GraphQLString},
+        email: {type: GraphQLString},
         job: {type: GraphQLString},
         country: {type: GraphQLString},
         phone: {type: GraphQLString} 

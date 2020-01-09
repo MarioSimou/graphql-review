@@ -4,7 +4,7 @@ import {
   GraphQLString,
   GraphQLFloat,
   GraphQLList,
-  GraphQLID
+  GraphQLID,
 } from "graphql";
 import Node from "../interfaces/Node";
 import Currency from "../enums/Currency";

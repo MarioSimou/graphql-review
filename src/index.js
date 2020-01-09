@@ -1,8 +1,7 @@
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import schema from "./graphql/schema";
-import products from "./mock/products";
-import users from "./mock/users";
+import data from "./mock/data";
 import { Product } from "./graphql/schema/types/objectTypes/Product";
 import { User } from "./graphql/schema/types/objectTypes/User";
 
@@ -13,8 +12,8 @@ const apolloServer = new ApolloServer({
   schema,
   context: {
     db: {
-      products: products.products.map(product => new Product(product)),
-      users: users.users.map(user => new User(user))
+      products: data.products.map(product => new Product(product)),
+      users: data.users.map(user => new User(user))
     }
   }
 });

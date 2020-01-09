@@ -1,5 +1,5 @@
 node_modules
 .vscode
 .env.development
-products.json
-users.json
+
+mock/*

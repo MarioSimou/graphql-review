@@ -1,4 +1,4 @@
-import { GraphQLUnionType, GraphQLList } from 'graphql'
+import { GraphQLUnionType } from 'graphql'
 import ProductType,{Product}  from '../objectTypes/Product'
 import UserType,{User} from '../objectTypes/User'
 
@@ -7,7 +7,7 @@ export default new GraphQLUnionType({
     description: 'Response body',
     types: [UserType, ProductType],
     resolveType: (value,ctx) => {
-        console.log(value[0])
+        console.log('VALUE: ', value)
         if(value instanceof Product) return ProductType
         if(value instanceof User) return UserType
         if(value instanceof Array && value[0] instanceof Product) {

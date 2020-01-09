@@ -1,9 +1,10 @@
-import { GraphQLInputObjectType, GraphQLString, GraphQLID, GraphQLNonNull, GraphQLList } from 'graphql'
+import { GraphQLInputObjectType, GraphQLString} from 'graphql'
+import Email from '../scalars/Email'
 
 export default new GraphQLInputObjectType({
     name: 'queryUserInput',
     fields: {
         id: {type: GraphQLString},
-        phone: {type: GraphQLString},
+        email: {type: Email},
     }
 })

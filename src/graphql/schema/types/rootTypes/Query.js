@@ -1,6 +1,4 @@
-import {GraphQLObjectType, GraphQLString, GraphQLList, GraphQLNonNull} from 'graphql'
-import User from '../objectTypes/User'
-import Product from '../objectTypes/Product'
+import {GraphQLObjectType, GraphQLNonNull} from 'graphql'
 import queryUserManyInput from '../inputObjectTypes/queryUserManyInput'
 import queryUserOneInput from '../inputObjectTypes/queryUserOneInput'
 import * as resolvers from '../../resolvers/Query'
@@ -21,7 +19,7 @@ export default new GraphQLObjectType({
         getUser: {
             type: GraphQLNonNull(Response),
             args: {
-                query: { type: queryUserOneInput }
+                query: { type: GraphQLNonNull(queryUserOneInput) }
             } ,
             description: 'Returns a user from the collection',
             resolve: resolvers.getUser,
