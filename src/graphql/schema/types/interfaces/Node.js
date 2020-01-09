@@ -1,10 +1,10 @@
-import  { GraphQLInterfaceType, GraphQLID } from 'graphql'
+import  { GraphQLInterfaceType, GraphQLID, GraphQLNonNull } from 'graphql'
 
 export default new GraphQLInterfaceType({
-    name: 'Node',
+    name: 'NodeType',
     fields: {
         id: {
-            type: GraphQLID,
+            type: GraphQLNonNull(GraphQLID),
             description: 'A unique identifier that is enforces to the object that implements it'
         }
     }

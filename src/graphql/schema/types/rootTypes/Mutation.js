@@ -1,5 +1,4 @@
 import { GraphQLObjectType, GraphQLNonNull } from 'graphql'
-import User from '../objectTypes/User'
 import * as resolvers from '../../resolvers/Mutation'
 import dataCreateUserInput from '../inputObjectTypes/dataCreateUserInput'
 import dateUpdateUserInput from '../inputObjectTypes/dateUpdateUserInput'
@@ -7,10 +6,10 @@ import queryUserOneInput from '../inputObjectTypes/queryUserOneInput'
 import dataCreateProductInput from '../inputObjectTypes/dataCreateProductInput'
 import dataUpdateProductInput from '../inputObjectTypes/dataUpdateProductInput'
 import queryProductOneInput from '../inputObjectTypes/queryProductOneInput'
-import Product from '../objectTypes/Product'
+import Response from '../objectTypes/Response'
 
 export default new GraphQLObjectType({
-    name: 'Mutation',
+    name: 'MutationRootType',
     description: 'Describes all mutations allowed in the system',
     fields: {
         createUser: {
@@ -19,7 +18,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(dataCreateUserInput),
                 }
             },
-            type: User,
+            type: GraphQLNonNull(Response),
             resolve: resolvers.createUser,
         },
         updateUser: {
@@ -31,7 +30,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(dateUpdateUserInput),
                 },
             },
-            type: User,
+            type: GraphQLNonNull(Response),
             resolve: resolvers.updateUser,
         },
         deleteUser: {
@@ -40,7 +39,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(queryUserOneInput),
                 },
             },
-            type: User,
+            type:GraphQLNonNull(Response),
             resolve: resolvers.deleteUser,
         },
         createProduct: {
@@ -49,7 +48,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(dataCreateProductInput),
                 }
             },
-            type: Product,
+            type: GraphQLNonNull(Response),
             resolve: resolvers.createProduct,
         },
         updateProduct: {
@@ -61,7 +60,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(dataUpdateProductInput)
                 }
             },
-            type: Product,
+            type: GraphQLNonNull(Response),
             resolve: resolvers.updateProduct
         },
         deleteProduct: {
@@ -70,7 +69,7 @@ export default new GraphQLObjectType({
                     type: GraphQLNonNull(queryProductOneInput)
                 }
             },
-            type: Product,
+            type: GraphQLNonNull(Response),
             resolve: resolvers.deleteProduct,
         },
     }

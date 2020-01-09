@@ -2,8 +2,18 @@ import {GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLList
 import Product from './Product'
 import Node from '../interfaces/Node'
 
+export function User({id,fName,lName,job,country,phone,products}){
+    this.id = id
+    this.fName = fName
+    this.lName = lName
+    this.job = job
+    this.country = country
+    this.phone = phone
+    this.products = products
+}
+
 export default new GraphQLObjectType({
-    name: 'User',
+    name: 'UserType',
     interfaces: [Node],
     description: 'A user entity in the system',
     fields: () => ({
@@ -39,5 +49,6 @@ export default new GraphQLObjectType({
                 return parent.products.map(productId => db.products.find(product => product.id === productId))
             }
         }
-    })
+    }),
+    isTypeOf: value => value instanceof User
 })
