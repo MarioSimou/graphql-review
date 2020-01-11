@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLInt, GraphQLBoolean, GraphQLString } from 'graphql'
+import { GraphQLObjectType, GraphQLNonNull, GraphQLInt, GraphQLBoolean, GraphQLString, GraphQLList } from 'graphql'
 import Body from '../union/Body'
 
 export default new GraphQLObjectType({
@@ -18,7 +18,7 @@ export default new GraphQLObjectType({
             description: 'Message return from any error'
         },
         body: {
-            type: Body,
+            type: GraphQLList(Body),
             description: 'Response body'
         }
     }

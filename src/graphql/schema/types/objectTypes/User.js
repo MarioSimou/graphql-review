@@ -1,11 +1,11 @@
 import {GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString, GraphQLList} from 'graphql'
-import Product from './Product'
+import ProductType from './Product'
 import Node from '../interfaces/Node'
 import Email from '../scalars/Email'
 import Time from '../scalars/Time'
+import models from '../../../../models'
 
 export function User({id,fName,lName,email,dob,job,country,phone,products}){
-    console.log('ID: ', id)
     this.id = id
     this.fName = fName
     this.lName = lName
@@ -14,7 +14,7 @@ export function User({id,fName,lName,email,dob,job,country,phone,products}){
     this.dob = dob
     this.country = country
     this.phone = phone
-    this.products = products
+    this.products = products || []
 }
 
 export default new GraphQLObjectType({
@@ -56,12 +56,27 @@ export default new GraphQLObjectType({
             description: 'The phone number of a user'
         },
         products: {
-            type: GraphQLNonNull(GraphQLList(Product)),
+            type: GraphQLNonNull(GraphQLList(ProductType)),
             description: 'A list of ids that match those users that bought the product',
-            resolve: (parent,_,{db}) => {
-                return parent.products.map(productId => db.products.find(product => product.id === productId))
+            resolve: async ({products:productsId},_,{pgClient}) => {
+                if(!productsId.length) return productsId
+
+                const {rows:products} = await pgClient.query(
+                    ...models.Product
+                    .select(
+                        models.Product.columns.id,
+                        models.Product.columns.name,
+                        models.Product.columns.price,
+                        models.Product.columns.material,
+                    )
+                    .from()
+                    .where(
+                        models.Product.columns.id.in(...productsId)
+                    )
+                    .end
+                ) 
+                return products
             }
         },
     }),
-    isTypeOf: value => value instanceof User
 })

@@ -1,10 +1,7 @@
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import schema from "./graphql/schema";
-import data from "./mock/data";
-import { Product } from "./graphql/schema/types/objectTypes/Product";
-import { User } from "./graphql/schema/types/objectTypes/User";
-import postgres from 'postgres'
+import {Client} from 'pg'
 
 const app = express(),
   port = process.env.PORT || 3000;
@@ -12,11 +9,12 @@ const app = express(),
 
 const init = cb => cb()
 init( async ()=> {
-  const sql = postgres(process.env.DB_URI)
+  const pgClient = new Client({connectionString: process.env.DB_URI})
+  pgClient.connect()
 
   const apolloServer = new ApolloServer({
     schema,
-    context: { sql }
+    context: { pgClient }
   });
   apolloServer.applyMiddleware({ app, path: "/graphql" });
   

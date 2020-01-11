@@ -1,52 +1,152 @@
-import {findItem} from '../../utils'
 import {Product} from '../types/objectTypes/Product'
 import {User} from '../types/objectTypes/User'
-import faker from 'faker'
+import models from '../../../models'
+import {createWhereClause, createInsertClause, createUpdateClause} from '../../utils'
 
-const newUser = user => new User({fName: user.fname, lName: user.lname,products:[], ...user})
-const newProduct = product => new Product({users: [], ...product})
-
-export const createUser = async (_,{data},{sql}) => {
+export const createUser = async (_,{data},{pgClient}) => {
     try {
-        const [user] = await sql`INSERT INTO users ${sql(data)} RETURNING *`
-        return {success: true, status: 200, body: newUser(user)}
+        const {rows:[user]} = await pgClient.query(...models.User
+            .insertInto()
+            .values(createInsertClause(models.User,data))
+            .returning(
+                models.User.columns.id,
+                models.User.columns.fName,
+                models.User.columns.lName,
+                models.User.columns.email,
+                models.User.columns.dob,
+                models.User.columns.job,
+                models.User.columns.country,
+                models.User.columns.phone,
+            )
+            .end)
+        console.log('USER: ', user)
+        return {success: true, status: 200, body: [new User(user)]}
     } catch(e){
         return {success: false, status: 400, message: e.message}
     }
 
 }
-export const updateUser = (_,{query,data},{db}) => {
-    let user = findItem(query,...db.users)
-    if(!user) throw new Error('User not found')
-    user = new User({ ...user, ...data})
-    return {success: true, status: 200, body: user}
-}
-export const deleteUser = (_,{query},{db}) => {
-    let user = findItem(query,...db.users)
-    if(!user) throw new Error('User not found')
-    db.users = db.users.filter(dbUser => user.id !== dbUser.id)
-    return {success: true, status: 200, body: user }
-}
 
-export const createProduct = async (_,{data},{sql}) => {
+export const updateUser = async (_,{query,data:{products, ...other}},{pgClient}) => {
     try {
-        const [product] = await sql`INSERT INTO products ${sql(data)} RETURNING *`
-        return {success: true, status: 200, body: newProduct(product) }    
+        const {rows:[user]} = await pgClient.query(...models.User
+            .select(models.User.columns.id)
+            .from()
+            .where(createWhereClause(models.User,query))
+            .end
+        )
+        if(!user) throw new Error('User not found')
+
+        const {rows:[updatedUser]} = await pgClient.query(...models.User
+            .update()
+            .set(...createUpdateClause(models.User,other))
+            .returning(
+                models.User.columns.id,
+                models.User.columns.fName,
+                models.User.columns.lName,
+                models.User.columns.email,
+                models.User.columns.dob,
+                models.User.columns.job,
+                models.User.columns.country,
+                models.User.columns.phone,
+            )
+            .end
+        )
+
+        if(products) {
+            for(let productId of products){
+                const {rows:[product]} = await pgClient.query(
+                    ...models.Product
+                    .select(
+                        models.Product.columns.id
+                    )
+                    .from()
+                    .where(
+                        models.Product.columns.id.equal(productId)
+                    )
+                    .end
+                )
+                if(!product) throw new Error(`Product with id ${productId} does not exist`)
+
+                await pgClient.query(
+                    ...models.UserProduct
+                    .insertInto()
+                    .values([
+                        models.UserProduct.columns.userId.equal(user.id),
+                        models.UserProduct.columns.productId.equal(productId)
+                    ])
+                    .end
+                )
+            }
+        }
+        
+        return {success: true, status: 200, body: [new User({...updatedUser, products})]}
     } catch(e){
-        return {success: false, status: 400, body: e.message }
+        return {success: false, status: 400, message: e.message}
+    }
+}
+export const deleteUser = async (_,{query},{pgClient}) => {
+    try {
+        const {rows:[user]} = await pgClient.query(...models.User
+            .select(models.User.columns.id)
+            .from()
+            .where(createWhereClause(models.User,query))
+            .end
+        )
+        if(!user) throw new Error('User not found')
+    
+        await pgClient.query('BEGIN')
+    
+        const {rows:userProducts} = await pgClient.query(
+            ...models.UserProduct
+            .deleteFrom()
+            .where(
+                models.UserProduct.columns.userId.equal(user.id)
+            )
+            .returning(
+                models.UserProduct.columns.productId
+            )
+            .end
+        )
+
+        const {rows:[deletedUser]} = await pgClient.query(...models.User
+            .deleteFrom()
+            .where(createWhereClause(models.User, query))
+            .returning(
+                models.User.columns.id,
+                models.User.columns.fName,
+                models.User.columns.lName,
+                models.User.columns.email,
+                models.User.columns.dob,
+                models.User.columns.job,
+                models.User.columns.country,
+                models.User.columns.phone,
+            )
+            .end
+        )
+        await pgClient.query('COMMIT')
+        return {success: true, status: 200, body: [new User({...deletedUser, products: userProducts.map(userProduct => userProduct.productId) })]}
+    }catch(e){
+        console.log('ERROR: ', e )
+        await pgClient.query('ROLLBACK')
+        return {success: false, status: 400, message: e.message }
     }
 }
 
-export const updateProduct = (_,{query,data},{db}) => {
-    let product = findItem(query,...db.products)
-    if(!product) throw new Error('Product not found')
-    product = new Product({...product, ...data})
-    return {success: true, status: 200, body: product }
-}
-
-export const deleteProduct = (_,{query},{db}) => {
-    const product = findItem(query, ...db.products)
-    if(!product) throw new Error('Product not found')
-    db.products = db.products.filter(productId => product.id !== productId)
-    return {success: true, status: 200, body: product }
+export const createProduct = async (_,{data},{pgClient}) => {
+    try {
+        const {rows:[product]} = await pgClient.query(...models.Product
+            .insertInto()
+            .values(createInsertClause(models.Product,data))
+            .returning(
+                models.Product.columns.id,
+                models.Product.columns.name,
+                models.Product.columns.price,
+                models.Product.columns.material
+            )
+            .end)
+        return {success: true, status: 200, body: [new Product(product)] }    
+    } catch(e){
+        return {success: false, status: 400, message: e.message }
+    }
 }

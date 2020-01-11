@@ -16,7 +16,7 @@ export function Product({ id, name, price, material, users }) {
   this.name = name;
   this.price = price;
   this.material = material;
-  this.users = users;
+  this.users = users || [];
 }
 
 export default new GraphQLObjectType({
@@ -44,10 +44,9 @@ export default new GraphQLObjectType({
     },
     users: {
       type: GraphQLNonNull(GraphQLList(User)),
-      resolve: ({ users }, _, { db }) => {
+      resolve: async ({ users }, _, { db }) => {
         return users.map(userId => db.users.find(user => user.id === userId));
       }
     }
   }),
-  isTypeOf: value => value instanceof Product
 });

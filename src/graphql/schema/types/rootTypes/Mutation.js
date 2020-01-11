@@ -4,8 +4,6 @@ import dataCreateUserInput from '../inputObjectTypes/dataCreateUserInput'
 import dateUpdateUserInput from '../inputObjectTypes/dateUpdateUserInput'
 import queryUserOneInput from '../inputObjectTypes/queryUserOneInput'
 import dataCreateProductInput from '../inputObjectTypes/dataCreateProductInput'
-import dataUpdateProductInput from '../inputObjectTypes/dataUpdateProductInput'
-import queryProductOneInput from '../inputObjectTypes/queryProductOneInput'
 import Response from '../objectTypes/Response'
 
 export default new GraphQLObjectType({
@@ -50,27 +48,6 @@ export default new GraphQLObjectType({
             },
             type: GraphQLNonNull(Response),
             resolve: resolvers.createProduct,
-        },
-        updateProduct: {
-            args:{
-                query: {
-                    type: GraphQLNonNull(queryProductOneInput)
-                },
-                data: {
-                    type: GraphQLNonNull(dataUpdateProductInput)
-                }
-            },
-            type: GraphQLNonNull(Response),
-            resolve: resolvers.updateProduct
-        },
-        deleteProduct: {
-            args: {
-                query: { 
-                    type: GraphQLNonNull(queryProductOneInput)
-                }
-            },
-            type: GraphQLNonNull(Response),
-            resolve: resolvers.deleteProduct,
         },
     }
 })

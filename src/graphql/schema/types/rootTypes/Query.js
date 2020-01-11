@@ -10,9 +10,6 @@ export default new GraphQLObjectType({
     fields: {
         getUsers: {
             type: GraphQLNonNull(Response),
-            args: {
-                'query': {type: queryUserManyInput }
-            },
             description: 'Returns a the whole collection of users',
             resolve: resolvers.getUsers,
         },
@@ -23,11 +20,6 @@ export default new GraphQLObjectType({
             } ,
             description: 'Returns a user from the collection',
             resolve: resolvers.getUser,
-        },
-        getProducts: {
-            type: GraphQLNonNull(Response),
-            description: 'Returns the whole collection of products',
-            resolve: resolvers.getProducts,
         }
     }
 })

@@ -38,3 +38,15 @@ export const convertTo = (convRates => (price, to) => {
     usd: 1.31,
     gbr: 1,
 })
+export const createWhereClause = (model, query) => {
+    return Object.entries(query).reduce((m,[colName,colVal], i) => {
+       return i === 0 ? m.columns[colName].equal(colVal) : m.and(model.columns[colName].equal(colVal))
+    } ,model)
+} 
+export const createUpdateClause = (model,data) => {
+    return Object.entries(data).reduce((s,[colName,colVal]) => {
+        return [...s, model.columns[colName].equal(colVal)]
+    },[])
+}
+
+export const createInsertClause = createUpdateClause

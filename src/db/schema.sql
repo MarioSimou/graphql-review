@@ -1,10 +1,10 @@
 -- users
 CREATE TABLE users (
     id int GENERATED ALWAYS AS IDENTITY,
-    fName varchar(255),
-    lName varchar(255),
+    first_name varchar(255),
+    last_name varchar(255),
     email varchar(255),
-    dob timestamptz,
+    date_of_birth timestamptz,
     job varchar(255),
     country varchar(255),
     phone varchar(255)
@@ -12,7 +12,7 @@ CREATE TABLE users (
 
 ALTER TABLE users ADD CONSTRAINT users_pk PRIMARY KEY (id);
 ALTER TABLE users ADD CONSTRAINT users_fname_lname_dob_country_uniq UNIQUE (email);
-ALTER TABLE users ADD CONSTRAINT users_fname_lname_dob_country_uniq UNIQUE (fName,lName,date_of_birth,country);
+ALTER TABLE users ADD CONSTRAINT users_fname_lname_dob_country_uniq UNIQUE (first_name,last_name,date_of_birth,country);
 ALTER TABLE users ALTER COLUMN fName SET NOT NULL;
 ALTER TABLE users ALTER COLUMN lName SET NOT NULL;
 ALTER TABLE users ALTER COLUMN email SET NOT NULL;
@@ -31,7 +31,7 @@ CREATE TABLE products (
 );
 
 ALTER TABLE products ADD CONSTRAINT products_pk PRIMARY KEY (id);
-ALTER TABLE products ADD CONSTRAINT products_name_uniq UNIQUE (name,price,material);
+ALTER TABLE products ADD CONSTRAINT products_name_price_material_uniq UNIQUE (name,price,material);
 ALTER TABLE products ADD CONSTRAINT products_name_uniq UNIQUE (name);
 ALTER TABLE products ALTER COLUMN price SET NOT NULL;
 ALTER TABLE products ALTER COLUMN name SET NOT NULL;

@@ -7,19 +7,8 @@ export default new GraphQLUnionType({
     description: 'Response body',
     types: [UserType, ProductType],
     resolveType: (value,ctx) => {
-        console.log('VALUE: ', value)
         if(value instanceof Product) return ProductType
         if(value instanceof User) return UserType
-        if(value instanceof Array && value[0] instanceof Product) {
-            console.log('return product')
-            console.log('id: ', value.length)
-            return ProductType
-        }
-        if(value instanceof Array && value[0] instanceof User) {
-            console.log('returning users')
-            return UserType     
-        }
-        console.log('continuing')
         return null   
     }
 })
